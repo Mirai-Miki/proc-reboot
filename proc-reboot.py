@@ -7,6 +7,7 @@ from time import sleep
 import os
 import signal
 import sys
+import datetime
 
 # add CMD for each processor to be run. Must match order of PROC paths
 CMD = ["node"]
@@ -18,13 +19,17 @@ WAIT = 10
 ################################# Functions ###################################
 
 def receiveSignal(signalNumber, frame):
-	print("Shutting Down")
+	print(currentTime()+" -- Shutting Down")
 	for i in range(len(pid)):
 		os.killpg(os.getpgid(pid[i]), signal.SIGKILL)
-		print("Killed: "+str(pid[i]))
+		print(currentTime()+" -- Killed: "+str(pid[i]))
 		
-	print("Shutdown Completed - Goodbye")
+	print(currentTime()+" -- Shutdown Completed - Goodbye")
 	exit()
+
+def currentTime():
+	currentTime = datetime.datetime.now()
+	return currentTime.strftime("%H:%M:%S %d/%m/%Y")
 
 ################################ Main #########################################
 
@@ -39,12 +44,13 @@ if __name__ == '__main__':
 		pid.append(os.fork()) # Spin up new process
 		if (pid[i] == 0): # This is the rebooter process
 			os.setsid()
-			while (True): # Forever reboot on proc end
-				print("Booting: "+PROC[i])
+			while (True): # Forever reboot on proc end				
+				print(currentTime()+" -- Booting: "+PROC[i])
 				sys.stdout.flush()
 				proc = Popen([CMD[i], PROC[i]])
 				status = proc.wait()
-				print((PROC[i]+" Exited with code: "+str(status)))
+				print((currentTime()+" -- "+PROC[i]+\
+						" Exited with code: "+str(status)))
 				sys.stdout.flush()
 				sleep(WAIT)
 	# After all procs have been started on a forever loop wait for shutdown
