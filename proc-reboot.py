@@ -8,9 +8,11 @@ import os
 import signal
 import sys
 
-NODE = "node"
-# Add paths of Bots to PROC list
+# add CMD for each processor to be run. Must match order of PROC paths
+CMD = ["node"]
+# Add paths of processors to PROC list
 PROC = ["/home/pi/programs/discord/dice/bot.js"]
+# Length of time before each reboot in seconds
 WAIT = 10
 
 ################################# Functions ###################################
@@ -37,13 +39,13 @@ if __name__ == '__main__':
 		pid.append(os.fork()) # Spin up new process
 		if (pid[i] == 0): # This is the rebooter process
 			os.setsid()
-			while (True): # Forever reboot on bots end
+			while (True): # Forever reboot on proc end
 				print("Booting: "+PROC[i])
 				sys.stdout.flush()
-				proc = Popen([NODE, PROC[i]])
+				proc = Popen([CMD[i], PROC[i]])
 				status = proc.wait()
 				print((PROC[i]+" Exited with code: "+str(status)))
 				sys.stdout.flush()
 				sleep(WAIT)
-	# After all bots have been started on there forever loop wait for shutdown
+	# After all procs have been started on a forever loop wait for shutdown
 	signal.pause()
