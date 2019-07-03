@@ -1,6 +1,6 @@
 # Author: Mirai-Miki
-# Discord Bot rebooter for Unix systems.
-# Restarts any bot that stops for any reason.
+# Process rebooter for Unix systems.
+# Restarts any process that stops for any reason.
 
 from subprocess import Popen
 from time import sleep
@@ -12,7 +12,6 @@ NODE = "node"
 # Add paths of Bots to PROC list
 PROC = ["/home/pi/programs/discord/dice/bot.js"]
 WAIT = 10
-pid = []
 
 ################################# Functions ###################################
 
@@ -30,6 +29,7 @@ def receiveSignal(signalNumber, frame):
 if __name__ == '__main__':
 	signal.signal(signal.SIGINT, receiveSignal)
 	signal.signal(signal.SIGTERM, receiveSignal)
+	pid = []
 	print("PID: "+str(os.getpid()))
 	sys.stdout.flush()
 
